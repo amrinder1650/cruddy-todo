@@ -39,6 +39,15 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = () => {
+
+  // writeCounter should only be exec. if readCounter is successful
+  readCounter((error, result) => {
+    counter = param2;
+
+
+
+  });
+
   counter = counter + 1;
   return zeroPaddedNumber(counter);
 };
