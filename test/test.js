@@ -133,7 +133,7 @@ describe('todos', () => {
 
   });
 
-  xdescribe('readOne', () => {
+  describe('readOne', () => {
     it('should return an error for non-existant todo', (done) => {
       todos.readOne('notAnId', (err, todo) => {
         expect(err).to.exist;
