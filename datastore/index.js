@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+var Promise = require('bluebird');
 
 var items = {};
 
@@ -25,19 +26,52 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  // var array = [];
+
+
   var filepath = `${exports.dataDir}`;
+
+  var promisesArr = [];
+
+  var fileTitles = new Promise((resolve, reject) => {
+    fs.readdir(filepath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
+  var fileText = new Promise((resolve, reject) => {
+    var newFilePath = `${filepath}/${title}`;
+    fs.readFile(newFilePath, (err, text) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ id: title, text: text });
+      }
+    });
+  });
+
+  return Promise.all(promisesArr);
+
+  /*
+  // filepath defined
+  var filepath = `${exports.dataDir}`;
+  // retrieving array of filenames in directory
   fs.readdir(filepath, (err, files) => {
     if (err) {
       throw (err);
     } else {
+      // upon successful retrieval, creating new array with appropriately filled in objects
       var newFiles = files.map((file) => {
         return { id: file.slice(0, 5), text: file.slice(0, 5) };
       });
+      // calling callback on new files
       callback(null, newFiles);
     }
-
   });
+  */
 
 };
 
