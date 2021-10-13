@@ -187,7 +187,7 @@ describe('todos', () => {
     });
   });
 
-  xdescribe('delete', () => {
+  describe('delete', () => {
     beforeEach((done) => {
       todos.create('delete this todo', done);
     });

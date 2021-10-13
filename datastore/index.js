@@ -91,14 +91,39 @@ exports.update = (id, text, callback) => {
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+
+  var filepath = `${exports.dataDir}`;
+
+  fs.readdir(filepath, (err, files) => {
+    if (err) {
+      throw (err);
+    } else {
+      var foundIt = false;
+      for (var i = 0; i < files.length; i++) {
+        var fileName = files[i].substr(0, 5);
+        if (fileName === id) {
+          foundIt = true;
+        }
+      }
+      if (foundIt === true) {
+
+        var filepathExists = `${exports.dataDir}/${id}.txt`;
+        fs.unlink(filepathExists, (err) => {
+          if (err) {
+            throw (err);
+          } else {
+            callback();
+          }
+        });
+
+      } else {
+        callback(new Error(`No item with id: ${id}`));
+      }
+
+    }
+
+  });
+
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
