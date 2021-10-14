@@ -49,7 +49,6 @@ exports.readAll = (callback) => {
       Promise.all(newFiles).then((messages) => callback(null, messages));
     }
   });
-
 };
 
 exports.readOne = (id, callback) => {
