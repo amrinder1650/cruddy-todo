@@ -35,7 +35,6 @@ const readCounter = (callback) => {
   //     callback(null, Number(fileData));
   //   }
   // });
-
 };
 
 const writeCounter = (count, callback) => {
