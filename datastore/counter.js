@@ -40,13 +40,17 @@ const readCounter = (callback) => {
 
 const writeCounter = (count, callback) => {
   var counterString = zeroPaddedNumber(count);
-  fs.writeFile(exports.counterFile, counterString, (err) => {
-    if (err) {
-      throw ('error writing counter');
-    } else {
-      callback(null, counterString);
-    }
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(exports.counterFile, counterString, (err) => {
+      if (err) {
+        throw ('error writing counter');
+      } else {
+        resolve(callback(null, counterString));
+      }
+    });
   });
+
 };
 
 // Public API - Fix this function //////////////////////////////////////////////
