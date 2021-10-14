@@ -9,6 +9,7 @@ var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
+
 exports.create = (text, callback) => {
   counter.getNextUniqueId((err, id) => {
     if (err) {
@@ -28,49 +29,27 @@ exports.create = (text, callback) => {
 
 exports.readAll = (callback) => {
 
+  var readFileAsync = Promise.promisify(fs.readFile);
+  var readdirAsync = Promise.promisify(fs.readdir);
+
   var filepath = `${exports.dataDir}`;
 
   fs.readdir(filepath, (err, files) => {
     if (err) {
       throw (err);
     } else {
+
       var newFiles = files.map((file) => {
         var filepath = path.join(exports.dataDir, file);
-        return readFile(filepath).then((data) => {
-          return {
-            id: file.slice(0, 5),
-            text: data.toString()
-          };
+
+        return readFileAsync(filepath).then((text) => {
+          return { id: file.slice(0, 5), text: text.toString() };
         });
       });
-      Promise.all(newFiles).then((items) => {
-        if (err) {
-          throw (err);
-        } else {
-          callback(null, items);
-        }
-      });
+
+      Promise.all(newFiles).then((messages) => callback(null, messages));
     }
   });
-
-  /*
-  // filepath defined
-  var filepath = `${exports.dataDir}`;
-  // retrieving array of filenames in directory
-  fs.readdir(filepath, (err, files) => {
-    if (err) {
-      throw (err);
-    } else {
-      // upon successful retrieval, creating new array with appropriately filled in objects
-      var newFiles = files.map((file) => {
-        return { id: file.slice(0, 5), text: file.slice(0, 5) };
-      });
-      // calling callback on new files
-      callback(null, newFiles);
-    }
-  });
-  */
-
 };
 
 exports.readOne = (id, callback) => {
