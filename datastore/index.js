@@ -33,7 +33,7 @@ exports.readAll = (callback) => {
   var readdirAsync = Promise.promisify(fs.readdir);
 
   var filepath = `${exports.dataDir}`;
-
+  //ignore
   fs.readdir(filepath, (err, files) => {
     if (err) {
       throw (err);
