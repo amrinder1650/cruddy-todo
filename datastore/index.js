@@ -9,28 +9,35 @@ var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
+var readFileAsync = Promise.promisify(fs.readFile);
+var writeFileAsync = Promise.promisify(fs.writeFile);
+var readdirAsync = Promise.promisify(fs.readdir);
+
 
 exports.create = (text, callback) => {
+
   counter.getNextUniqueId((err, id) => {
     if (err) {
       throw (err);
     } else {
       var filepath = `${exports.dataDir}/${id}.txt`;
-      fs.writeFile(filepath, text, (err) => {
-        if (err) {
-          throw (err);
-        } else {
-          callback(null, { id, text });
-        }
+      //writeFileAsync(filepath).then((result) => console.log(result));
+
+      return new Promise ((resolve, reject) => {
+        fs.writeFile(filepath, text, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(callback(null, { id, text }));
+          }
+        });
       });
     }
   });
+
 };
 
 exports.readAll = (callback) => {
-
-  var readFileAsync = Promise.promisify(fs.readFile);
-  var readdirAsync = Promise.promisify(fs.readdir);
 
   var filepath = `${exports.dataDir}`;
   //ignore
@@ -54,13 +61,24 @@ exports.readAll = (callback) => {
 
 exports.readOne = (id, callback) => {
   var filepath = `${exports.dataDir}/${id}.txt`;
-  fs.readFile(filepath, 'utf8', (err, text) => {
-    if (err) {
-      callback(new Error(`No item with id: ${id}`));
-    } else {
-      callback(null, { id, text });
-    }
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(filepath, 'utf8', (err, text) => {
+      if (err) {
+        callback(new Error(`No item with id: ${id}`));
+      } else {
+        resolve(callback(null, { id, text }));
+      }
+    });
   });
+
+  // fs.readFile(filepath, 'utf8', (err, text) => {
+  //   if (err) {
+  //     callback(new Error(`No item with id: ${id}`));
+  //   } else {
+  //     callback(null, { id, text });
+  //   }
+  // });
 
 };
 
