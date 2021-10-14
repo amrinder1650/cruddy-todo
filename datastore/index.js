@@ -60,13 +60,24 @@ exports.readAll = (callback) => {
 
 exports.readOne = (id, callback) => {
   var filepath = `${exports.dataDir}/${id}.txt`;
-  fs.readFile(filepath, 'utf8', (err, text) => {
-    if (err) {
-      callback(new Error(`No item with id: ${id}`));
-    } else {
-      callback(null, { id, text });
-    }
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(filepath, 'utf8', (err, text) => {
+      if (err) {
+        callback(new Error(`No item with id: ${id}`));
+      } else {
+        resolve(callback(null, { id, text }));
+      }
+    });
   });
+
+  // fs.readFile(filepath, 'utf8', (err, text) => {
+  //   if (err) {
+  //     callback(new Error(`No item with id: ${id}`));
+  //   } else {
+  //     callback(null, { id, text });
+  //   }
+  // });
 
 };
 
